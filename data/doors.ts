@@ -13,32 +13,14 @@ export const doors: DoorContent[] = [
     id: 1,
     date: 1,
     title: "Mein Mini-Mee",
-    message: `Du bist mein kleines Minime,
-mein Spiegel aus Gedanken, Klang und Sein,
-als hätte das Universum zweimal gelacht –
-einmal als ich, und einmal als du, so fein.
+    message: `Du bist mein kleines Mini Me  
+Satt-sehen an diesem Bild kann ich mich nie 
 
-Du machst die gleichen Töne wie ich,
-dieses leise Lachen, dieses kleine „hm“ –
-und jedes Mal fühl ich mich ein Stück Zuhause,
-weil du bist wie ich – nur heller, wärmer, jung und stumm
-in Momenten, in denen Worte überflüssig sind.
+Du machst sogar schon die gleichen Geräusche
+Muss manchmal testen ob du echt bist und ich mich nicht täusche
 
-Wir reden oft, indem wir gar nicht reden,
-ein Blick, ein Lächeln – und wir verstehen.
-So leicht, so echt, so wunderbar vertraut,
-als wären unsere Herzen seit langem ein System.
-
-Und wenn mir meine Kleidung nicht mehr passt,
-wandert sie weiter – zu dir, wie ein Kreis,
-als würde ein Teil von mir an dir weiterleben,
-weicher, frecher, schöner – ganz ohne Preis.
-
-Du bist mein kleines Minime,
-doch du bist auch du – einzigartig, wild und frei.
-Und ich liebe, dass du mein Echo bist –
-keine Kopie, nein – ein Stück von mir
-und doch ein eigenes Universum dabei.`,
+Meine Klamotten wandern alle irgendwann an dich
+Und sehen dann auch besser an dir aus, das versteht sich`,
 
     image: "/images/day1.jpg",
   },
