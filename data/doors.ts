@@ -13,13 +13,11 @@ export const doors: DoorContent[] = [
     id: 1,
     date: 1,
     title: "Mein Mini-Mee",
-    message: `Du bist mein kleines Mini Me  
-Satt-sehen an diesem Bild kann ich mich nie 
-
-Du machst sogar schon die gleichen Geräusche
-Muss manchmal testen ob du echt bist und ich mich nicht täusche
-
-Meine Klamotten wandern alle irgendwann an dich
+    message: `Du bist mein kleines Mini Me  <br/>
+Satt-sehen an diesem Bild kann ich mich nie  <br/>
+Du machst sogar schon die gleichen Geräusche <br/>
+Muss manchmal testen ob du echt bist und ich mich nicht täusche <br/>
+Meine Klamotten wandern alle irgendwann an dich <br/>
 Und sehen dann auch besser an dir aus, das versteht sich`,
 
     image: "/images/day1.jpg",
