@@ -102,7 +102,7 @@ export default function DoorModal({ door, isOpen, onClose }: DoorModalProps) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.4 }}
                 >
-                  <p className="text-base sm:text-lg md:text-xl text-gray-700 leading-relaxed font-cute px-1">
+                  <p className="text-xl text-xxl text-gray-700 leading-relaxed font-cute px-1 whitespace-pre-line">
                     {door.message}
                   </p>
                 </motion.div>
