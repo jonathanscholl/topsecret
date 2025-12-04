@@ -77,7 +77,7 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
     date: 9,
     title: "Special Day",
     message: "Every day with you is special, but today is extra special! 🎄",
-    image: "/images/day9.jpg",
+    link: "/snake",
   },
   {
     id: 10,
