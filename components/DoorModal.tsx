@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { X, ExternalLink } from 'lucide-react';
 import { DoorContent } from '@/data/doors';
 import { useEffect } from 'react';
+import Link from 'next/link';
 
 interface DoorModalProps {
   door: DoorContent | null;
@@ -123,18 +124,36 @@ export default function DoorModal({ door, isOpen, onClose }: DoorModalProps) {
 
                 {/* Link */}
                 {door.link && (
-                  <motion.a
-                    href={door.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-3 bg-christmas-red text-white rounded-full active:bg-soft-red sm:hover:bg-soft-red transition-colors shadow-lg touch-manipulation min-h-[44px] text-base sm:text-sm"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6 }}
-                  >
-                    <span>Open Surprise</span>
-                    <ExternalLink size={18} className="sm:w-4 sm:h-4" />
-                  </motion.a>
+                  <>
+                    {door.link.startsWith('/') ? (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 }}
+                      >
+                        <Link
+                          href={door.link}
+                          className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-3 bg-christmas-red text-white rounded-full active:bg-soft-red sm:hover:bg-soft-red transition-colors shadow-lg touch-manipulation min-h-[44px] text-base sm:text-sm"
+                          onClick={onClose}
+                        >
+                          <span>Öffnen</span>
+                        </Link>
+                      </motion.div>
+                    ) : (
+                      <motion.a
+                        href={door.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center justify-center gap-2 px-6 py-3.5 sm:py-3 bg-christmas-red text-white rounded-full active:bg-soft-red sm:hover:bg-soft-red transition-colors shadow-lg touch-manipulation min-h-[44px] text-base sm:text-sm"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.6 }}
+                      >
+                        <span>Open Surprise</span>
+                        <ExternalLink size={18} className="sm:w-4 sm:h-4" />
+                      </motion.a>
+                    )}
+                  </>
                 )}
               </div>
             </div>

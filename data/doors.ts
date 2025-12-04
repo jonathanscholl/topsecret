@@ -46,9 +46,9 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
   {
     id: 5,
     date: 5,
-    title: "Little Surprise",
-    message: "You deserve all the happiness in the world. Here's a little surprise just for you! 🎁",
-    link: "https://example.com/surprise",
+    title: "Wordle Spiel",
+    message: "Rate das geheime Wort! 🎮",
+    link: "/wordle",
   },
   {
     id: 6,
