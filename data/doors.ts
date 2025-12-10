@@ -89,8 +89,9 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
   {
     id: 11,
     date: 11,
-    title: "Beautiful You",
-    message: "You are beautiful inside and out. Never forget that! 💫",
+    title: "Gutschein",
+    message: "Für einmal 15 minuten massieri",
+    image: "/images/day3.jpg",
   },
   {
     id: 12,
