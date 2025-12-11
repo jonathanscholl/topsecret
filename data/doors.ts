@@ -96,9 +96,9 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
   {
     id: 12,
     date: 12,
-    title: "Joy and Laughter",
-    message: "Here's to all the joy and laughter we share together! 😊",
-    link: "https://example.com/day12",
+    title: "Eine besondere Weihnachtsgeschichte",
+    message: "Eine besondere Weihnachtsgeschichte von einem Special Guest!",
+    link: "/christmasstory",
   },
   {
     id: 13,
