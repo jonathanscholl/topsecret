@@ -65,6 +65,100 @@
     position: absolute;
     animation: sparkle 2s ease-in-out infinite;
   }
+
+  /* Shake animation for puzzle */
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
+  }
+
+  .animate-shake {
+    animation: shake 0.3s ease-in-out;
+  }
+}
+
+/* Jigsaw Puzzle Library Styles */
+.jigsaw-puzzle {
+  background: rgba(255, 255, 255, 0.5) !important;
+  border-radius: 0.75rem !important;
+  padding: 1.5rem !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+  min-width: 600px !important;
+  min-height: 600px !important;
+  width: 100% !important;
+  max-width: 900px !important;
+  margin: 0 auto !important;
+}
+
+.jigsaw-puzzle__piece {
+  border-radius: 0.25rem !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+  transition: transform 0.2s, box-shadow 0.2s !important;
+  touch-action: none !important;
+}
+
+.jigsaw-puzzle__piece:hover {
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
+  transform: scale(1.02) !important;
+}
+
+.jigsaw-puzzle__piece--solved {
+  box-shadow: 0 2px 8px rgba(34, 139, 34, 0.3) !important;
+}
+
+.jigsaw-puzzle__piece--dragging {
+  z-index: 1000 !important;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
+  transform: scale(1.05) !important;
+}
+
+/* Mobile optimizations for puzzle */
+@media (max-width: 640px) {
+  .jigsaw-puzzle {
+    padding: 0.5rem !important;
+    min-width: 100% !important;
+    min-height: auto !important;
+    max-width: 100% !important;
+  }
+  
+  .jigsaw-puzzle__piece {
+    min-width: 40px !important;
+    min-height: 40px !important;
+  }
+
+  .jigsaw-puzzle-wrapper {
+    min-height: 50vh;
+    padding: 0.5rem;
+  }
+}
+
+.jigsaw-puzzle-wrapper {
+  overflow: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 70vh;
+}
+
+.jigsaw-puzzle-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.jigsaw-puzzle-wrapper::-webkit-scrollbar-track {
+  background: rgba(255, 248, 225, 0.5);
+  border-radius: 4px;
+}
+
+.jigsaw-puzzle-wrapper::-webkit-scrollbar-thumb {
+  background: rgba(211, 47, 47, 0.3);
+  border-radius: 4px;
+}
+
+.jigsaw-puzzle-wrapper::-webkit-scrollbar-thumb:hover {
+  background: rgba(211, 47, 47, 0.5);
 }
 
 /* Custom scrollbar - hidden on mobile for cleaner look */
