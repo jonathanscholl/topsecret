@@ -105,7 +105,7 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
     date: 13,
     title: "Eine besondere Weihnachtsgeschichte Part 2",
     message: "Eine besondere Weihnachtsgeschichte von einem Special Guest!",
-    video: "/videos/day13.mov",
+    video: "/videos/day13.mp4",
   },
   {
     id: 14,
