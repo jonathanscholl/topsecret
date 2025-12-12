@@ -103,8 +103,9 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
   {
     id: 13,
     date: 13,
-    title: "Grateful Heart",
-    message: "I'm so grateful to have you in my life. Thank you for being you! 🙏",
+    title: "Eine besondere Weihnachtsgeschichte Part 2",
+    message: "Eine besondere Weihnachtsgeschichte von einem Special Guest!",
+    video: "/videos/day13.mov",
   },
   {
     id: 14,
