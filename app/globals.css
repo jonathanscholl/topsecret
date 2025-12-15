@@ -84,11 +84,20 @@
   border-radius: 0.75rem !important;
   padding: 1.5rem !important;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-  min-width: 600px !important;
-  min-height: 600px !important;
+  min-width: 0 !important;
+  min-height: 400px !important;
   width: 100% !important;
   max-width: 900px !important;
   margin: 0 auto !important;
+  box-sizing: border-box !important;
+}
+
+/* Desktop styles */
+@media (min-width: 641px) {
+  .jigsaw-puzzle {
+    min-width: 600px !important;
+    min-height: 600px !important;
+  }
 }
 
 .jigsaw-puzzle__piece {
@@ -96,6 +105,11 @@
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
   transition: transform 0.2s, box-shadow 0.2s !important;
   touch-action: none !important;
+  cursor: grab !important;
+}
+
+.jigsaw-puzzle__piece:active {
+  cursor: grabbing !important;
 }
 
 .jigsaw-puzzle__piece:hover {
@@ -111,15 +125,19 @@
   z-index: 1000 !important;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2) !important;
   transform: scale(1.05) !important;
+  cursor: grabbing !important;
 }
 
-/* Mobile optimizations for puzzle */
+/* Mobile optimizations for puzzle - MUST come after base styles */
 @media (max-width: 640px) {
   .jigsaw-puzzle {
     padding: 0.5rem !important;
-    min-width: 100% !important;
-    min-height: auto !important;
+    min-width: 0 !important;
+    width: 100% !important;
+    min-height: 400px !important;
     max-width: 100% !important;
+    box-sizing: border-box !important;
+    display: block !important;
   }
   
   .jigsaw-puzzle__piece {
@@ -128,8 +146,26 @@
   }
 
   .jigsaw-puzzle-wrapper {
-    min-height: 50vh;
-    padding: 0.5rem;
+    min-height: 50vh !important;
+    padding: 0.5rem !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+  }
+}
+
+/* Additional mobile fix for very small screens */
+@media (max-width: 480px) {
+  .jigsaw-puzzle {
+    width: 100% !important;
+    padding: 0.25rem !important;
+    min-height: 350px !important;
+  }
+  
+  .jigsaw-puzzle-wrapper {
+    padding: 0.25rem !important;
   }
 }
 
@@ -141,6 +177,7 @@
   justify-content: center;
   align-items: flex-start;
   min-height: 70vh;
+  position: relative;
 }
 
 .jigsaw-puzzle-wrapper::-webkit-scrollbar {
