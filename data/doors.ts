@@ -138,9 +138,9 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
   {
     id: 18,
     date: 18,
-    title: "Love Notes",
-    message: "Just a little love note to remind you how special you are! 💌",
-    image: "/images/day18.jpg",
+    title: "Gutschein",
+    message: "Für einmal 15 minuten massieri",
+    image: "/images/day3.jpg",
   },
   {
     id: 19,
