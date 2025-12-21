@@ -1,19 +1,30 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, RotateCw } from 'lucide-react';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 
-// Available images - you can replace these with your own images later
-const IMAGE_PAIRS = [
-  '/images/memory/1.jpeg',
-  '/images/memory/2.jpeg',
-  '/images/memory/3.jpeg',
-  '/images/memory/4.JPG',
-  '/images/memory/5.jpeg',
-  '/images/memory/6.jpeg',
-];
+// Image sets - original set for door 14, sudoku set for door 22
+const IMAGE_SETS = {
+  default: [
+    '/images/memory/1.jpeg',
+    '/images/memory/2.jpeg',
+    '/images/memory/3.jpeg',
+    '/images/memory/4.JPG',
+    '/images/memory/5.jpeg',
+    '/images/memory/6.jpeg',
+  ],
+  new: [
+    '/images/memory/new/1.JPG',
+    '/images/memory/new/2.JPG',
+    '/images/memory/new/3.jpg',
+    '/images/memory/new/4.JPG',
+    '/images/memory/new/5.JPG',
+    '/images/memory/new/6.jpeg',
+  ],
+};
 
 interface Card {
   id: number;
@@ -22,7 +33,11 @@ interface Card {
   isMatched: boolean;
 }
 
-export default function MemoryPage() {
+function MemoryGame() {
+  const searchParams = useSearchParams();
+  const imageSet = searchParams.get('set') || 'default';
+  const IMAGE_PAIRS = IMAGE_SETS[imageSet as keyof typeof IMAGE_SETS] || IMAGE_SETS.default;
+  
   const [cards, setCards] = useState<Card[]>([]);
   const [flippedCards, setFlippedCards] = useState<number[]>([]);
   const [moves, setMoves] = useState(0);
@@ -50,7 +65,7 @@ export default function MemoryPage() {
     setMatches(0);
     setGameState('playing');
     setIsChecking(false);
-  }, []);
+  }, [IMAGE_PAIRS]);
 
   useEffect(() => {
     initializeGame();
@@ -262,6 +277,21 @@ export default function MemoryPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function MemoryPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen bg-gradient-to-br from-cream via-warm-beige to-blush-pink/30 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-christmas-red mx-auto mb-4"></div>
+          <p className="text-gray-600">Wird geladen...</p>
+        </div>
+      </div>
+    }>
+      <MemoryGame />
+    </Suspense>
   );
 }
 
