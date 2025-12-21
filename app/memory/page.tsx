@@ -20,8 +20,8 @@ const IMAGE_SETS = {
     '/images/memory/new/1.JPG',
     '/images/memory/new/2.JPG',
     '/images/memory/new/3.jpg',
-    '/images/memory/new/4.JPG',
-    '/images/memory/new/5.JPG',
+    '/images/memory/new/4.jpg',
+    '/images/memory/new/5.jpg',
     '/images/memory/new/6.jpeg',
   ],
 };
