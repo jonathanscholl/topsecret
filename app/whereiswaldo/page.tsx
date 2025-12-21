@@ -52,6 +52,8 @@ export default function WhereIsWaldoPage() {
   const [isKissing, setIsKissing] = useState(false);
   const [gameComplete, setGameComplete] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
+  const [timeElapsed, setTimeElapsed] = useState(0);
+  const [isTimerRunning, setIsTimerRunning] = useState(true);
   const [imageSize, setImageSize] = useState({ width: 0, height: 0 });
   const [headPositions, setHeadPositions] = useState<{
     apple: { x: number; y: number };
@@ -97,6 +99,24 @@ export default function WhereIsWaldoPage() {
     };
   }, [headPercentages]);
 
+  // Timer effect
+  useEffect(() => {
+    if (!isTimerRunning || isResetting) return;
+
+    const interval = setInterval(() => {
+      setTimeElapsed(prev => prev + 100); // Increment by 100ms
+    }, 100); // Update every 100ms
+
+    return () => clearInterval(interval);
+  }, [isTimerRunning, isResetting]);
+
+  const formatTime = (milliseconds: number) => {
+    const totalSeconds = milliseconds / 1000;
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = (totalSeconds % 60).toFixed(1);
+    return `${minutes}:${seconds.padStart(4, '0')}`;
+  };
+
   const handleImageClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!imageRef.current || !headPositions || gameComplete || isKissing) return;
 
@@ -131,6 +151,7 @@ export default function WhereIsWaldoPage() {
 
     // Check if both are found after this click
     if (foundApple && foundSnake) {
+      setIsTimerRunning(false); // Stop the timer
       setTimeout(() => {
         setIsKissing(true);
         setTimeout(() => {
@@ -146,6 +167,8 @@ export default function WhereIsWaldoPage() {
     setSnakeFound(false);
     setIsKissing(false);
     setGameComplete(false);
+    setTimeElapsed(0);
+    setIsTimerRunning(true);
     
     // Hide heads, generate new positions, then show them after a brief delay
     setTimeout(() => {
@@ -185,19 +208,26 @@ export default function WhereIsWaldoPage() {
           </h1>
           <button
             onClick={resetGame}
-            className="flex items-center gap-1 sm:gap-2 text-christmas-red active:text-soft-red transition-colors touch-manipulation min-h-[44px] min-w-[44px] justify-center"
+            disabled={(isKissing && !gameComplete) || isResetting}
+            className="flex items-center gap-1 sm:gap-2 text-christmas-red active:text-soft-red transition-colors touch-manipulation min-h-[44px] min-w-[44px] justify-center disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <RotateCw size={20} className="sm:w-6 sm:h-6" />
             <span className="text-base sm:text-lg font-semibold hidden sm:inline">Neu</span>
           </button>
         </div>
 
-        {/* Progress */}
+        {/* Progress and Timer */}
         <div className="flex justify-center gap-4 sm:gap-6 mb-4 sm:mb-6 px-2">
           <div className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3 shadow-md">
             <div className="text-xs sm:text-sm text-gray-600">Gefunden</div>
             <div className="text-lg sm:text-2xl font-bold text-christmas-red">
               {(appleFound ? 1 : 0) + (snakeFound ? 1 : 0)}/2
+            </div>
+          </div>
+          <div className="bg-white/80 backdrop-blur-sm rounded-lg sm:rounded-xl px-3 sm:px-4 py-2 sm:py-3 shadow-md">
+            <div className="text-xs sm:text-sm text-gray-600">Zeit</div>
+            <div className="text-lg sm:text-2xl font-bold text-christmas-red">
+              {formatTime(timeElapsed)}
             </div>
           </div>
         </div>
@@ -227,8 +257,11 @@ export default function WhereIsWaldoPage() {
               <h2 className="text-xl sm:text-2xl md:text-3xl font-bold text-forest-green mb-2">
                 🎉 Du hast es geschafft! 🎉
               </h2>
-              <p className="text-base sm:text-lg text-gray-700">
+              <p className="text-base sm:text-lg text-gray-700 mb-2">
                 Du hast uns beide gefunden! 💕
+              </p>
+              <p className="text-base sm:text-lg font-semibold text-christmas-red">
+                Zeit: {formatTime(timeElapsed)}
               </p>
             </motion.div>
           )}
@@ -237,7 +270,9 @@ export default function WhereIsWaldoPage() {
         {/* Image Container */}
         <div
           ref={containerRef}
-          className="relative w-full flex justify-center px-2 sm:px-0 cursor-crosshair overflow-hidden"
+          className={`relative w-full flex justify-center px-2 sm:px-0 overflow-hidden ${
+            isKissing || gameComplete ? 'cursor-default' : 'cursor-crosshair'
+          }`}
           onClick={handleImageClick}
         >
           <div className="relative w-full max-w-full">
