@@ -173,16 +173,16 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
   {
     id: 23,
     date: 23,
-    title: "Finde uns!",
-    message: "Finde unsere beiden Köpfe im Bild! Klicke auf uns, wenn du uns findest. 💕",
-    link: "/whereiswaldo",
+    title: "Schau mal wer da tanzt!",
+    message: "Frohe Weihnachten aus dem Hause Niedermeier-Scholl",
+    video: "/videos/eva.mp4",
   },
   {
     id: 24,
     date: 24,
     title: "Frohe Weihnachten, mein Schatz",
     message: "Frohe Weihnachten, meine wunderbare Person! Diese Reise durch den Advent war so besonders, weil ich sie mit dir erleben durfte. Du bist das Beste, was mir je passiert ist. Ich liebe dich über alles und kann es kaum erwarten, den Rest meines Lebens mit dir zu verbringen. Danke, dass du bist, wie du bist. ❤️🎄✨",
-    image: "/images/day5.jpeg", // Using your favorite photo from day 5, or replace with another special one
+    link: "/recap",
   },
 ];
 
