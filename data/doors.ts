@@ -180,9 +180,9 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
   {
     id: 24,
     date: 24,
-    title: "Frohe Weihnachten, mein Schatz",
-    message: "Frohe Weihnachten, meine wunderbare Person! Diese Reise durch den Advent war so besonders, weil ich sie mit dir erleben durfte. Du bist das Beste, was mir je passiert ist. Ich liebe dich über alles und kann es kaum erwarten, den Rest meines Lebens mit dir zu verbringen. Danke, dass du bist, wie du bist. ❤️🎄✨",
-    link: "/recap",
+    title: "Dein massierie gutscheinbuch",
+    message: "Dein massierie gutscheinbuch + 5 Gutscheine für 15 minuten massieri",
+    image: "/images/day3.jpg",
   },
 ];
 
