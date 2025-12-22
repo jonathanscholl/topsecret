@@ -175,7 +175,7 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
     date: 23,
     title: "Schau mal wer da tanzt!",
     message: "Frohe Weihnachten aus dem Hause Niedermeier-Scholl",
-    video: "/videos/eva.mp4",
+    video: "/videos/eva.MP4",
   },
   {
     id: 24,
