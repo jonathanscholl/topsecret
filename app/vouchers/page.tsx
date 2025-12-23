@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Gift, Heart, X } from 'lucide-react';
 import Link from 'next/link';
+import ScratchCard from 'react-scratchcard-v2';
 
 // Voucher types: 3x 15min, 2x 20min, 1x 30min
 const VOUCHER_TYPES = [
@@ -25,227 +26,103 @@ const shuffleArray = <T,>(array: T[]): T[] => {
   return shuffled;
 };
 
+// Generate scratch card overlay image
+const generateScratchOverlay = (width: number, height: number): string => {
+  const canvas = document.createElement('canvas');
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext('2d');
+  
+  if (!ctx) return '';
+  
+  // Create gradient background
+  const gradient = ctx.createLinearGradient(0, 0, width, height);
+  gradient.addColorStop(0, '#cbd5e1');
+  gradient.addColorStop(0.5, '#94a3b8');
+  gradient.addColorStop(1, '#64748b');
+  
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, 0, width, height);
+  
+  // Add text pattern
+  ctx.fillStyle = '#475569';
+  ctx.font = 'bold 32px Arial';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'middle';
+  
+  // Repeat text pattern
+  for (let x = 0; x < width; x += 100) {
+    for (let y = 0; y < height; y += 70) {
+      ctx.fillText('SCRATCH', x + 50, y + 35);
+    }
+  }
+  
+  return canvas.toDataURL();
+};
+
 interface Voucher {
   id: number;
   minutes: number;
   label: string;
   scratched: boolean;
-  scratchedPercent: number;
 }
 
-interface ScratchCardProps {
+interface ScratchCardComponentProps {
   voucher: Voucher;
-  onScratch: (id: number, percent: number) => void;
-  size?: 'small' | 'large';
+  onComplete: () => void;
+  width: number;
+  height: number;
 }
 
-function ScratchCard({ voucher, onScratch, size = 'large' }: ScratchCardProps) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const [isScratching, setIsScratching] = useState(false);
-  const [dimensions, setDimensions] = useState({ width: 0, height: 0 });
-  const lastPosRef = useRef<{ x: number; y: number } | null>(null);
+function ScratchCardComponent({ voucher, onComplete, width, height }: ScratchCardComponentProps) {
+  const [overlayImage, setOverlayImage] = useState<string>('');
 
   useEffect(() => {
-    const updateDimensions = () => {
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        setDimensions({ width: rect.width, height: rect.height });
-      }
-    };
+    // Generate overlay image with actual dimensions
+    const image = generateScratchOverlay(width, height);
+    setOverlayImage(image);
+  }, [width, height]);
 
-    updateDimensions();
-    window.addEventListener('resize', updateDimensions);
-    return () => window.removeEventListener('resize', updateDimensions);
-  }, []);
-
-  useEffect(() => {
-    if (!canvasRef.current || dimensions.width === 0) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
-
-    // High DPI support
-    const dpr = window.devicePixelRatio || 1;
-    canvas.width = dimensions.width * dpr;
-    canvas.height = dimensions.height * dpr;
-    ctx.scale(dpr, dpr);
-
-    // Create scratch-off overlay with pattern
-    const gradient = ctx.createLinearGradient(0, 0, dimensions.width, dimensions.height);
-    gradient.addColorStop(0, '#cbd5e1');
-    gradient.addColorStop(0.5, '#94a3b8');
-    gradient.addColorStop(1, '#64748b');
-    
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, dimensions.width, dimensions.height);
-
-    // Add text pattern
-    ctx.fillStyle = '#475569';
-    const fontSize = size === 'large' ? 32 : 20;
-    ctx.font = `bold ${fontSize}px Arial`;
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    
-    const stepX = size === 'large' ? 100 : 70;
-    const stepY = size === 'large' ? 70 : 50;
-    
-    // Repeat text pattern
-    for (let x = 0; x < dimensions.width; x += stepX) {
-      for (let y = 0; y < dimensions.height; y += stepY) {
-        ctx.fillText('SCRATCH', x + stepX / 2, y + stepY / 2);
-      }
-    }
-  }, [dimensions, size]);
-
-  const getEventPos = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current;
-    if (!canvas) return null;
-
-    const rect = canvas.getBoundingClientRect();
-    const scaleX = canvas.width / rect.width;
-    const scaleY = canvas.height / rect.height;
-
-    let clientX: number, clientY: number;
-    if ('touches' in e) {
-      if (e.touches.length === 0) return null;
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    } else {
-      clientX = e.clientX;
-      clientY = e.clientY;
-    }
-
-    return {
-      x: (clientX - rect.left) * scaleX,
-      y: (clientY - rect.top) * scaleY,
-    };
-  };
-
-  const checkScratchedPercent = (ctx: CanvasRenderingContext2D, canvas: HTMLCanvasElement) => {
-    const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    const pixels = imageData.data;
-    let transparentCount = 0;
-    const totalPixels = pixels.length / 4;
-    
-    // Check every 16th pixel (alpha channel) for performance
-    for (let i = 3; i < pixels.length; i += 16) {
-      if (pixels[i] < 128) transparentCount++;
-    }
-
-    const sampleCount = totalPixels / 4;
-    const scratchedPercent = (transparentCount / sampleCount) * 100;
-    onScratch(voucher.id, scratchedPercent);
-
-    return scratchedPercent > 50;
-  };
-
-  const scratch = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    if (voucher.scratched) return;
-
-    const pos = getEventPos(e);
-    if (!pos) return;
-
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
-    if (!canvas || !ctx) return;
-
-    ctx.globalCompositeOperation = 'destination-out';
-    const brushSize = size === 'large' ? 50 : 40;
-    ctx.lineWidth = brushSize;
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-
-    if (lastPosRef.current) {
-      ctx.beginPath();
-      ctx.moveTo(lastPosRef.current.x, lastPosRef.current.y);
-      ctx.lineTo(pos.x, pos.y);
-      ctx.stroke();
-    } else {
-      ctx.beginPath();
-      ctx.arc(pos.x, pos.y, brushSize / 2, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    lastPosRef.current = pos;
-
-    // Check scratched percentage periodically (throttled for performance)
-    if (Math.random() < 0.15) { // Check ~15% of the time while scratching
-      const isComplete = checkScratchedPercent(ctx, canvas);
-      if (isComplete) {
-        setIsScratching(false);
-        lastPosRef.current = null;
-      }
-    }
-  };
-
-  const handleStart = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    if (voucher.scratched) return;
-    e.preventDefault();
-    e.stopPropagation();
-    lastPosRef.current = null;
-    setIsScratching(true);
-    scratch(e);
-  };
-
-  const handleMove = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
-    if (!isScratching || voucher.scratched) return;
-    e.preventDefault();
-    e.stopPropagation();
-    scratch(e);
-  };
-
-  const handleEnd = () => {
-    // Check scratched percentage when ending
-    const canvas = canvasRef.current;
-    const ctx = canvas?.getContext('2d');
-    if (canvas && ctx && !voucher.scratched) {
-      checkScratchedPercent(ctx, canvas);
-    }
-
-    setIsScratching(false);
-    lastPosRef.current = null;
-  };
-
-  const cardClasses = size === 'large' 
-    ? 'w-full max-w-md mx-auto aspect-[4/3]'
-    : 'aspect-square';
-
-  return (
-    <div
-      ref={containerRef}
-      className={`relative rounded-xl sm:rounded-2xl overflow-hidden shadow-lg touch-none ${cardClasses}`}
-      style={{ width: size === 'small' ? '100%' : '100%' }}
-    >
-      {/* Voucher content underneath */}
-      <div className="absolute inset-0 bg-gradient-to-br from-christmas-red via-soft-red to-blush-pink flex flex-col items-center justify-center text-white p-4">
-        <Gift className={size === 'large' ? 'w-20 h-20 sm:w-24 sm:h-24 mb-4' : 'w-12 h-12 sm:w-16 sm:h-16 mb-2 sm:mb-3'} />
+  if (!overlayImage) {
+    return (
+      <div 
+        className="w-full bg-gradient-to-br from-christmas-red via-soft-red to-blush-pink flex flex-col items-center justify-center text-white p-4 rounded-xl sm:rounded-2xl"
+        style={{ width, height }}
+      >
         <div className="text-center">
-          <div className={size === 'large' ? 'text-3xl sm:text-4xl md:text-5xl font-bold mb-2' : 'text-lg sm:text-xl md:text-2xl font-bold mb-1'}>
+          <div className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
             {voucher.label}
           </div>
-          <div className={size === 'large' ? 'text-xl sm:text-2xl opacity-90' : 'text-sm sm:text-base opacity-90'}>
+          <div className="text-xl sm:text-2xl opacity-90">
             Massage
           </div>
         </div>
       </div>
+    );
+  }
 
-      {/* Scratch canvas overlay */}
-      {!voucher.scratched && (
-        <canvas
-          ref={canvasRef}
-          className="absolute inset-0 touch-none cursor-pointer"
-          style={{ width: '100%', height: '100%' }}
-          onMouseDown={handleStart}
-          onMouseMove={handleMove}
-          onMouseUp={handleEnd}
-          onMouseLeave={handleEnd}
-          onTouchStart={handleStart}
-          onTouchMove={handleMove}
-          onTouchEnd={handleEnd}
-        />
-      )}
+  return (
+    <div className="rounded-xl sm:rounded-2xl overflow-hidden shadow-lg" style={{ width, height }}>
+      <ScratchCard
+        width={width}
+        height={height}
+        image={overlayImage}
+        finishPercent={50}
+        brushSize={50}
+        onComplete={onComplete}
+      >
+        <div className="w-full h-full bg-gradient-to-br from-christmas-red via-soft-red to-blush-pink flex flex-col items-center justify-center text-white p-4">
+          <Gift className="w-20 h-20 sm:w-24 sm:h-24 mb-4" />
+          <div className="text-center">
+            <div className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
+              {voucher.label}
+            </div>
+            <div className="text-xl sm:text-2xl opacity-90">
+              Massage
+            </div>
+          </div>
+        </div>
+      </ScratchCard>
     </div>
   );
 }
@@ -301,10 +178,13 @@ interface ScratchModalProps {
   voucher: Voucher | null;
   isOpen: boolean;
   onClose: () => void;
-  onScratch: (id: number, percent: number) => void;
+  onScratchComplete: (id: number) => void;
 }
 
-function ScratchModal({ voucher, isOpen, onClose, onScratch }: ScratchModalProps) {
+function ScratchModal({ voucher, isOpen, onClose, onScratchComplete }: ScratchModalProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [dimensions, setDimensions] = useState({ width: 600, height: 450 });
+
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -317,7 +197,44 @@ function ScratchModal({ voucher, isOpen, onClose, onScratch }: ScratchModalProps
     };
   }, [isOpen]);
 
+  // Calculate dimensions for the scratch card
+  useEffect(() => {
+    if (!containerRef.current || !isOpen) return;
+    
+    const updateDimensions = () => {
+      if (containerRef.current) {
+        // Use viewport dimensions for larger card
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const padding = 64; // Total padding (32px each side on mobile, more on desktop)
+        const headerSpace = 120; // Space for header/instructions
+        const maxWidth = Math.min(viewportWidth - padding, 700);
+        const maxHeight = viewportHeight - padding - headerSpace;
+        
+        // Calculate width and height maintaining 4:3 aspect ratio
+        let width = maxWidth;
+        let height = Math.round(width * 0.75);
+        
+        // If height is too large, adjust width
+        if (height > maxHeight) {
+          height = maxHeight;
+          width = Math.round(height / 0.75);
+        }
+        
+        setDimensions({ width, height });
+      }
+    };
+
+    updateDimensions();
+    window.addEventListener('resize', updateDimensions);
+    return () => window.removeEventListener('resize', updateDimensions);
+  }, [isOpen]);
+
   if (!voucher) return null;
+
+  const handleComplete = () => {
+    onScratchComplete(voucher.id);
+  };
 
   return (
     <AnimatePresence>
@@ -341,7 +258,10 @@ function ScratchModal({ voucher, isOpen, onClose, onScratch }: ScratchModalProps
             transition={{ type: 'spring', damping: 25, stiffness: 300 }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative bg-gradient-to-br from-cream to-warm-beige rounded-2xl sm:rounded-3xl shadow-2xl max-w-lg w-full p-6 sm:p-8">
+            <div 
+              ref={containerRef}
+              className="relative bg-gradient-to-br from-cream to-warm-beige rounded-2xl sm:rounded-3xl shadow-2xl max-w-4xl w-full p-4 sm:p-6 md:p-8"
+            >
               {/* Close button */}
               <button
                 onClick={onClose}
@@ -361,11 +281,31 @@ function ScratchModal({ voucher, isOpen, onClose, onScratch }: ScratchModalProps
               )}
 
               {/* Scratch Card */}
-              <ScratchCard
-                voucher={voucher}
-                onScratch={onScratch}
-                size="large"
-              />
+              {!voucher.scratched ? (
+                <div className="flex justify-center">
+                  <ScratchCardComponent
+                    voucher={voucher}
+                    onComplete={handleComplete}
+                    width={dimensions.width}
+                    height={dimensions.height}
+                  />
+                </div>
+              ) : (
+                <div 
+                  className="w-full bg-gradient-to-br from-christmas-red via-soft-red to-blush-pink flex flex-col items-center justify-center text-white p-4 rounded-xl sm:rounded-2xl mx-auto"
+                  style={{ width: dimensions.width, height: dimensions.height }}
+                >
+                  <Gift className="w-20 h-20 sm:w-24 sm:h-24 mb-4" />
+                  <div className="text-center">
+                    <div className="text-3xl sm:text-4xl md:text-5xl font-bold mb-2">
+                      {voucher.label}
+                    </div>
+                    <div className="text-xl sm:text-2xl opacity-90">
+                      Massage
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </motion.div>
         </>
@@ -382,7 +322,6 @@ export default function VouchersPage() {
       minutes: v.minutes,
       label: v.label,
       scratched: false,
-      scratchedPercent: 0,
     }));
   });
 
@@ -401,15 +340,13 @@ export default function VouchersPage() {
     }, 300);
   };
 
-  const handleScratch = (id: number, percent: number) => {
+  const handleScratchComplete = (id: number) => {
     setVouchers(prev =>
       prev.map(voucher => {
         if (voucher.id === id) {
-          const isScratched = percent > 50;
           return {
             ...voucher,
-            scratched: isScratched,
-            scratchedPercent: percent,
+            scratched: true,
           };
         }
         return voucher;
@@ -420,8 +357,7 @@ export default function VouchersPage() {
     if (selectedVoucher && selectedVoucher.id === id) {
       setSelectedVoucher(prev => prev ? {
         ...prev,
-        scratched: percent > 50,
-        scratchedPercent: percent,
+        scratched: true,
       } : null);
     }
   };
@@ -530,7 +466,7 @@ export default function VouchersPage() {
           voucher={selectedVoucher}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
-          onScratch={handleScratch}
+          onScratchComplete={handleScratchComplete}
         />
       </div>
     </div>
