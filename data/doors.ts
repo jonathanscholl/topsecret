@@ -181,8 +181,8 @@ Und sehen dann auch besser an dir aus, das versteht sich ${'\n'}`,
     id: 24,
     date: 24,
     title: "Dein massierie gutscheinbuch",
-    message: "Dein massierie gutscheinbuch + 5 Gutscheine für 15 minuten massieri",
-    image: "/images/day3.jpg",
+    message: "Klicke auf die Fragezeichen, um deine Gutscheine zu enthüllen! 💕",
+    link: "/vouchers",
   },
 ];
 
